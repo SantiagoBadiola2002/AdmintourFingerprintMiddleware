@@ -11,15 +11,8 @@
       "RelativeMoniker": "D:0:0:{432B76C5-F60D-492A-9E82-308D3172CF62}|AdmintourFingerprintMiddleware\\AdmintourFingerprintMiddleware.csproj|solutionrelative:admintourfingerprintmiddleware\\services\\fingerprintmockservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\dev\\Proyecto Admintour\\ZKFinger SDK V10.0-Windows-Lite\\C#\\Demo\\Form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{432B76C5-F60D-492A-9E82-308D3172CF62}|AdmintourFingerprintMiddleware\\AdmintourFingerprintMiddleware.csproj|d:\\dev\\proyecto admintour\\admintourfingerprintmiddleware\\admintourfingerprintmiddleware\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{432B76C5-F60D-492A-9E82-308D3172CF62}|AdmintourFingerprintMiddleware\\AdmintourFingerprintMiddleware.csproj|solutionrelative:admintourfingerprintmiddleware\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{432B76C5-F60D-492A-9E82-308D3172CF62}|AdmintourFingerprintMiddleware\\AdmintourFingerprintMiddleware.csproj|d:\\dev\\proyecto admintour\\admintourfingerprintmiddleware\\admintourfingerprintmiddleware\\controllers\\fingerprintcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{432B76C5-F60D-492A-9E82-308D3172CF62}|AdmintourFingerprintMiddleware\\AdmintourFingerprintMiddleware.csproj|solutionrelative:admintourfingerprintmiddleware\\controllers\\fingerprintcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -29,23 +22,11 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "FingerprintController.cs",
-              "DocumentMoniker": "D:\\dev\\Proyecto Admintour\\AdmintourFingerprintMiddleware\\AdmintourFingerprintMiddleware\\Controllers\\FingerprintController.cs",
-              "RelativeDocumentMoniker": "AdmintourFingerprintMiddleware\\Controllers\\FingerprintController.cs",
-              "ToolTip": "D:\\dev\\Proyecto Admintour\\AdmintourFingerprintMiddleware\\AdmintourFingerprintMiddleware\\Controllers\\FingerprintController.cs",
-              "RelativeToolTip": "AdmintourFingerprintMiddleware\\Controllers\\FingerprintController.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAABIAAAANAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-27T22:46:04.38Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 2,
               "Title": "Program.cs",
               "DocumentMoniker": "D:\\dev\\Proyecto Admintour\\AdmintourFingerprintMiddleware\\AdmintourFingerprintMiddleware\\Program.cs",
               "RelativeDocumentMoniker": "AdmintourFingerprintMiddleware\\Program.cs",
@@ -63,10 +44,9 @@
               "RelativeDocumentMoniker": "AdmintourFingerprintMiddleware\\Services\\FingerprintMockService.cs",
               "ToolTip": "D:\\dev\\Proyecto Admintour\\AdmintourFingerprintMiddleware\\AdmintourFingerprintMiddleware\\Services\\FingerprintMockService.cs",
               "RelativeToolTip": "AdmintourFingerprintMiddleware\\Services\\FingerprintMockService.cs",
-              "ViewState": "AQIAANUAAAAAAAAAAADwv+wAAAAAAAAA",
+              "ViewState": "AQIAANQAAAAAAAAAAADwv0wAAAAtAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-27T02:54:07.563Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-27T02:54:07.563Z"
             },
             {
               "$type": "Document",
@@ -76,22 +56,9 @@
               "RelativeDocumentMoniker": "AdmintourFingerprintMiddleware\\Controllers\\FingerprintMockController.cs",
               "ToolTip": "D:\\dev\\Proyecto Admintour\\AdmintourFingerprintMiddleware\\AdmintourFingerprintMiddleware\\Controllers\\FingerprintMockController.cs",
               "RelativeToolTip": "AdmintourFingerprintMiddleware\\Controllers\\FingerprintMockController.cs",
-              "ViewState": "AQIAAFwAAAAAAAAAAADwv28AAAAgAAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAYAAAABAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-09-25T00:22:57.325Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "Form1.cs",
-              "DocumentMoniker": "D:\\dev\\Proyecto Admintour\\ZKFinger SDK V10.0-Windows-Lite\\C#\\Demo\\Form1.cs",
-              "RelativeDocumentMoniker": "..\\ZKFinger SDK V10.0-Windows-Lite\\C#\\Demo\\Form1.cs",
-              "ToolTip": "D:\\dev\\Proyecto Admintour\\ZKFinger SDK V10.0-Windows-Lite\\C#\\Demo\\Form1.cs",
-              "RelativeToolTip": "..\\ZKFinger SDK V10.0-Windows-Lite\\C#\\Demo\\Form1.cs",
-              "ViewState": "AQIAAOwAAAAAAAAAAADwvy0BAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-27T01:34:17.657Z",
               "EditorCaption": ""
             }
           ]
