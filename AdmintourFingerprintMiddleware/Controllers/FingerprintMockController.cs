@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
+using AdmintourFingerprintMiddleware.Models;
 using AdmintourFingerprintMiddleware.Services;
 
 namespace AdmintourFingerprintMiddleware.Controllers
@@ -167,5 +168,34 @@ namespace AdmintourFingerprintMiddleware.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+
+        [HttpGet("comparar")]
+        public IActionResult CompararHuellas()
+        {
+            try
+            {
+                _logger.LogInformation("Iniciando comparación de dos huellas...");
+                var resultado = _servicioHuella.CompararDosHuellas();
+
+                return Ok(new
+                {
+                    Status = "ok",
+                    Match = resultado.Match,
+                    Score = resultado.Score
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error comparando huellas");
+                return StatusCode(500, new
+                {
+                    Status = "error",
+                    Message = ex.Message
+                });
+            }
+        }
+
+
+
     }
 }

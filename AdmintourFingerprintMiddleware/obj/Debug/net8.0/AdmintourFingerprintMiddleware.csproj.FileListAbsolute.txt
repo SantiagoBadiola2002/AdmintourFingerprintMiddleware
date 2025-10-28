@@ -30,3 +30,4 @@ D:\dev\Proyecto Admintour\AdmintourFingerprintMiddleware\AdmintourFingerprintMid
 D:\dev\Proyecto Admintour\AdmintourFingerprintMiddleware\AdmintourFingerprintMiddleware\obj\Debug\net8.0\AdmintourFingerprintMiddleware.pdb
 D:\dev\Proyecto Admintour\AdmintourFingerprintMiddleware\AdmintourFingerprintMiddleware\obj\Debug\net8.0\AdmintourFingerprintMiddleware.genruntimeconfig.cache
 D:\dev\Proyecto Admintour\AdmintourFingerprintMiddleware\AdmintourFingerprintMiddleware\obj\Debug\net8.0\ref\AdmintourFingerprintMiddleware.dll
+D:\dev\Proyecto Admintour\AdmintourFingerprintMiddleware\AdmintourFingerprintMiddleware\obj\Debug\net8.0\AdmintourFingerprintMiddleware.sourcelink.json

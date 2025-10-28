@@ -235,6 +235,38 @@ namespace AdmintourFingerprintMiddleware.Services
             return base64Final;
         }
 
+        public (bool Match, int Score) CompararDosHuellas()
+        {
+            if (_deviceHandle == IntPtr.Zero)
+                throw new InvalidOperationException("Dispositivo no inicializado");
+
+            // Capturar primer template (fusionado de 3 huellas)
+            _logger.LogInformation("Capturando primera huella...");
+            string base64Huella1 = CapturarHuella3Veces();
+            byte[] template1 = Convert.FromBase64String(base64Huella1);
+
+            // Capturar segunda huella
+            _logger.LogInformation("Capturando segunda huella...");
+            string base64Huella2 = CapturarHuella3Veces();
+            byte[] template2 = Convert.FromBase64String(base64Huella2);
+
+            // Crear base de datos temporal
+            IntPtr tmpDB = zkfp2.DBInit();
+            if (tmpDB == IntPtr.Zero)
+                throw new Exception("Error inicializando base de datos de huellas");
+
+            // Comparar templates
+            int score = zkfp2.DBMatch(tmpDB, template1, template2);
+            zkfp2.DBFree(tmpDB);
+
+            bool match = score > 50; // umbral configurable (50–100 recomendado)
+
+            _logger.LogInformation("Resultado comparación: Match={Match}, Score={Score}", match, score);
+
+            return (match, score);
+        }
+
+
 
 
 
