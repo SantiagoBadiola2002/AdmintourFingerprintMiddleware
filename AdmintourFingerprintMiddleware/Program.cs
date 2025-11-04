@@ -2,12 +2,15 @@ using AdmintourFingerprintMiddleware.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Agregar servicios al contenedor
 builder.Services.AddControllers();
 
-// Registrar servicios con sus interfaces
+// Registrar servicios de huella
 builder.Services.AddSingleton<FingerprintService>();
 builder.Services.AddSingleton<FingerprintMockService>();
+
+// Registrar cliente HTTP para Admintour
+builder.Services.AddHttpClient<AdmintourApiClient>();
 
 // Habilitar CORS para cualquier origen
 builder.Services.AddCors(options =>
@@ -25,7 +28,7 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Configurar el pipeline HTTP
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -35,5 +38,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseCors();
 app.UseAuthorization();
+
 app.MapControllers();
+
 app.Run();

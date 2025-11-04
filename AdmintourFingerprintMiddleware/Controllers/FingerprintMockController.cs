@@ -2,6 +2,8 @@
 using Microsoft.Extensions.Logging;
 using System;
 using AdmintourFingerprintMiddleware.Models;
+using System.Threading.Tasks;
+using System.Net.Http;
 using AdmintourFingerprintMiddleware.Services;
 
 namespace AdmintourFingerprintMiddleware.Controllers
@@ -192,6 +194,26 @@ namespace AdmintourFingerprintMiddleware.Controllers
                     Status = "error",
                     Message = ex.Message
                 });
+            }
+        }
+
+        [HttpPost("capturar-y-enviar/{hotelCodigo}")]
+        public async Task<IActionResult> CapturarYEnviarAHuellero(string hotelCodigo, [FromServices] AdmintourApiClient apiClient)
+        {
+            try
+            {
+                _logger.LogInformation("Controller: Iniciando proceso de captura y envío de huella para hotel {Hotel}", hotelCodigo);
+
+                string base64Template = _servicioHuella.CapturarHuella3Veces();
+
+                await apiClient.GrabarHuellaAsync(hotelCodigo, base64Template);
+
+                return Ok(new { Status = "ok", Message = "Huella capturada y enviada correctamente." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error capturando o enviando huella");
+                return StatusCode(500, new { Status = "error", Message = ex.Message });
             }
         }
 
