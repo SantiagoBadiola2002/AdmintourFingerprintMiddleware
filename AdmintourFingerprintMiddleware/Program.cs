@@ -7,7 +7,6 @@ builder.Services.AddControllers();
 
 // Registrar servicios de huella
 builder.Services.AddSingleton<FingerprintService>();
-builder.Services.AddSingleton<FingerprintMockService>();
 
 // Registrar cliente HTTP para Admintour
 builder.Services.AddHttpClient<AdmintourApiClient>();
