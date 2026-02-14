@@ -11,6 +11,10 @@
       "RelativeMoniker": "D:0:0:{432B76C5-F60D-492A-9E82-308D3172CF62}|AdmintourFingerprintMiddleware\\AdmintourFingerprintMiddleware.csproj|solutionrelative:admintourfingerprintmiddleware\\services\\fingerprintservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{432B76C5-F60D-492A-9E82-308D3172CF62}|AdmintourFingerprintMiddleware\\AdmintourFingerprintMiddleware.csproj|d:\\dev\\proyecto admintour\\admintourfingerprintmiddleware\\admintourfingerprintmiddleware\\services\\admintourapiclient.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{432B76C5-F60D-492A-9E82-308D3172CF62}|AdmintourFingerprintMiddleware\\AdmintourFingerprintMiddleware.csproj|solutionrelative:admintourfingerprintmiddleware\\services\\admintourapiclient.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{432B76C5-F60D-492A-9E82-308D3172CF62}|AdmintourFingerprintMiddleware\\AdmintourFingerprintMiddleware.csproj|d:\\dev\\proyecto admintour\\admintourfingerprintmiddleware\\admintourfingerprintmiddleware\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{432B76C5-F60D-492A-9E82-308D3172CF62}|AdmintourFingerprintMiddleware\\AdmintourFingerprintMiddleware.csproj|solutionrelative:admintourfingerprintmiddleware\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
@@ -22,11 +26,24 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 3,
           "Children": [
             {
               "$type": "Document",
               "DocumentIndex": 2,
+              "Title": "AdmintourApiClient.cs",
+              "DocumentMoniker": "D:\\dev\\Proyecto Admintour\\AdmintourFingerprintMiddleware\\AdmintourFingerprintMiddleware\\Services\\AdmintourApiClient.cs",
+              "RelativeDocumentMoniker": "AdmintourFingerprintMiddleware\\Services\\AdmintourApiClient.cs",
+              "ToolTip": "D:\\dev\\Proyecto Admintour\\AdmintourFingerprintMiddleware\\AdmintourFingerprintMiddleware\\Services\\AdmintourApiClient.cs",
+              "RelativeToolTip": "AdmintourFingerprintMiddleware\\Services\\AdmintourApiClient.cs",
+              "ViewState": "AQIAABMAAAAAAAAAAAAgwBkAAAArAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-14T22:25:35.079Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
               "Title": "Program.cs",
               "DocumentMoniker": "D:\\dev\\Proyecto Admintour\\AdmintourFingerprintMiddleware\\AdmintourFingerprintMiddleware\\Program.cs",
               "RelativeDocumentMoniker": "AdmintourFingerprintMiddleware\\Program.cs",
@@ -45,7 +62,7 @@
               "RelativeDocumentMoniker": "AdmintourFingerprintMiddleware\\Services\\FingerprintService.cs",
               "ToolTip": "D:\\dev\\Proyecto Admintour\\AdmintourFingerprintMiddleware\\AdmintourFingerprintMiddleware\\Services\\FingerprintService.cs",
               "RelativeToolTip": "AdmintourFingerprintMiddleware\\Services\\FingerprintService.cs",
-              "ViewState": "AQIAABQBAAAAAAAAAAAqwF0BAAAAAAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAwAAAAxAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-11-26T20:20:54.592Z",
               "EditorCaption": ""
@@ -58,7 +75,7 @@
               "RelativeDocumentMoniker": "AdmintourFingerprintMiddleware\\Controllers\\FingerprintController.cs",
               "ToolTip": "D:\\dev\\Proyecto Admintour\\AdmintourFingerprintMiddleware\\AdmintourFingerprintMiddleware\\Controllers\\FingerprintController.cs",
               "RelativeToolTip": "AdmintourFingerprintMiddleware\\Controllers\\FingerprintController.cs",
-              "ViewState": "AQIAAC0AAAAAAAAAAAAowCsAAABFAAAA",
+              "ViewState": "AQIAABABAAAAAAAAAAAAACoBAAATAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-11-26T21:10:31.782Z",
               "EditorCaption": ""

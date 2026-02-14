@@ -247,15 +247,21 @@ namespace AdmintourFingerprintMiddleware.Controllers
         }
 
 
-        [HttpPost("capturar-y-enviar/{hotelCodigo}")]
+        [HttpPost("capturar-y-enviar")]
         public async Task<IActionResult> CapturarYEnviar(
-        string hotelCodigo,
-        [FromServices] AdmintourApiClient apiClient)
+    [FromServices] AdmintourApiClient apiClient)
         {
             try
             {
+                string rutaArchivo = @"C:\config\hotel.txt";
+
+                if (!System.IO.File.Exists(rutaArchivo))
+                    return StatusCode(500, new { error = "Archivo de configuración de hotel no encontrado." });
+
+                string hotelCodigo = (await System.IO.File.ReadAllTextAsync(rutaArchivo)).Trim();
+
                 if (string.IsNullOrWhiteSpace(hotelCodigo))
-                    return BadRequest(new { error = "El código de hotel es obligatorio." });
+                    return StatusCode(500, new { error = "El archivo de hotel está vacío o es inválido." });
 
                 _logger.LogInformation("Iniciando proceso de captura y envío de huella para el hotel {Hotel}", hotelCodigo);
 
@@ -270,16 +276,22 @@ namespace AdmintourFingerprintMiddleware.Controllers
                 return Ok(new
                 {
                     estado = "ok",
-                    mensaje = "Huella capturada y enviada correctamente."
+                    mensaje = "Huella capturada y enviada correctamente.",
+                    hotel = hotelCodigo
                 });
             }
             catch (OperationCanceledException)
             {
-                return StatusCode(408, new { estado = "error", mensaje = "Tiempo de espera agotado durante la captura." });
+                return StatusCode(408, new
+                {
+                    estado = "error",
+                    mensaje = "Tiempo de espera agotado durante la captura."
+                });
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error al capturar o enviar la huella.");
+
                 return StatusCode(500, new
                 {
                     estado = "error",
@@ -287,6 +299,7 @@ namespace AdmintourFingerprintMiddleware.Controllers
                 });
             }
         }
+
 
 
     }
