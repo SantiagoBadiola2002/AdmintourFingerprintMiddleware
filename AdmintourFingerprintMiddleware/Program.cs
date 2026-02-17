@@ -67,4 +67,6 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}"
 );
 
+var tray = new TrayService();
+tray.Start();
 app.Run();

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AdmintourFingerprintMiddleware")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a529203d55f4031fb867b3461d6570f3dcb2635c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c05e24797217a5c7d927dc57269fbcbe521d538c")]
 [assembly: System.Reflection.AssemblyProductAttribute("AdmintourFingerprintMiddleware")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AdmintourFingerprintMiddleware")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

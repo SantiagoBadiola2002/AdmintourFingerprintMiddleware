@@ -338,8 +338,6 @@ D:\dev\Proyecto Admintour\AdmintourFingerprintMiddleware\AdmintourFingerprintMid
 D:\dev\Proyecto Admintour\AdmintourFingerprintMiddleware\AdmintourFingerprintMiddleware\obj\Release\net8.0\win-x64\AdmintourFingerprintMiddleware.AssemblyInfoInputs.cache
 D:\dev\Proyecto Admintour\AdmintourFingerprintMiddleware\AdmintourFingerprintMiddleware\obj\Release\net8.0\win-x64\AdmintourFingerprintMiddleware.AssemblyInfo.cs
 D:\dev\Proyecto Admintour\AdmintourFingerprintMiddleware\AdmintourFingerprintMiddleware\obj\Release\net8.0\win-x64\AdmintourFingerprintMiddleware.csproj.CoreCompileInputs.cache
-D:\dev\Proyecto Admintour\AdmintourFingerprintMiddleware\AdmintourFingerprintMiddleware\obj\Release\net8.0\win-x64\AdmintourFingerprintMiddleware.MvcApplicationPartsAssemblyInfo.cs
-D:\dev\Proyecto Admintour\AdmintourFingerprintMiddleware\AdmintourFingerprintMiddleware\obj\Release\net8.0\win-x64\AdmintourFingerprintMiddleware.MvcApplicationPartsAssemblyInfo.cache
 D:\dev\Proyecto Admintour\AdmintourFingerprintMiddleware\AdmintourFingerprintMiddleware\obj\Release\net8.0\win-x64\AdmintourFingerprintMiddleware.sourcelink.json
 D:\dev\Proyecto Admintour\AdmintourFingerprintMiddleware\AdmintourFingerprintMiddleware\obj\Release\net8.0\win-x64\staticwebassets.build.json
 D:\dev\Proyecto Admintour\AdmintourFingerprintMiddleware\AdmintourFingerprintMiddleware\obj\Release\net8.0\win-x64\staticwebassets.development.json
@@ -355,3 +353,7 @@ D:\dev\Proyecto Admintour\AdmintourFingerprintMiddleware\AdmintourFingerprintMid
 D:\dev\Proyecto Admintour\AdmintourFingerprintMiddleware\AdmintourFingerprintMiddleware\obj\Release\net8.0\win-x64\AdmintourFingerprintMiddleware.pdb
 D:\dev\Proyecto Admintour\AdmintourFingerprintMiddleware\AdmintourFingerprintMiddleware\obj\Release\net8.0\win-x64\AdmintourFingerprintMiddleware.genruntimeconfig.cache
 D:\dev\Proyecto Admintour\AdmintourFingerprintMiddleware\AdmintourFingerprintMiddleware\obj\Release\net8.0\win-x64\ref\AdmintourFingerprintMiddleware.dll
+D:\dev\Proyecto Admintour\AdmintourFingerprintMiddleware\AdmintourFingerprintMiddleware\bin\Release\net8.0\win-x64\AdmintourFingerprintMiddleware.staticwebassets.runtime.json
+D:\dev\Proyecto Admintour\AdmintourFingerprintMiddleware\AdmintourFingerprintMiddleware\obj\Release\net8.0\win-x64\AdmintourFingerprintMiddleware.RazorAssemblyInfo.cache
+D:\dev\Proyecto Admintour\AdmintourFingerprintMiddleware\AdmintourFingerprintMiddleware\obj\Release\net8.0\win-x64\AdmintourFingerprintMiddleware.RazorAssemblyInfo.cs
+D:\dev\Proyecto Admintour\AdmintourFingerprintMiddleware\AdmintourFingerprintMiddleware\bin\Release\net8.0\win-x64\System.Windows.Extensions.dll

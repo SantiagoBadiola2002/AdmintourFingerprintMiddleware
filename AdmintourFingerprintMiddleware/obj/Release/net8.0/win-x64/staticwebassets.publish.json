@@ -1,11 +1,77 @@
 {
   "Version": 1,
-  "Hash": "XJxX3FDYOrkg4hDxFaApjf1lKFyGCg9YJNGEydDyoY8=",
+  "Hash": "fVCjn4mKA3hzg92beWiD34KIyOptNBT51iAKKov4LE4=",
   "Source": "AdmintourFingerprintMiddleware",
   "BasePath": "_content/AdmintourFingerprintMiddleware",
   "Mode": "Default",
   "ManifestType": "Publish",
   "ReferencedProjectsConfiguration": [],
-  "DiscoveryPatterns": [],
-  "Assets": []
+  "DiscoveryPatterns": [
+    {
+      "Name": "AdmintourFingerprintMiddleware\\wwwroot",
+      "Source": "AdmintourFingerprintMiddleware",
+      "ContentRoot": "D:\\dev\\Proyecto Admintour\\AdmintourFingerprintMiddleware\\AdmintourFingerprintMiddleware\\wwwroot\\",
+      "BasePath": "_content/AdmintourFingerprintMiddleware",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "D:\\dev\\Proyecto Admintour\\AdmintourFingerprintMiddleware\\AdmintourFingerprintMiddleware\\wwwroot\\css\\site.css",
+      "SourceId": "AdmintourFingerprintMiddleware",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\dev\\Proyecto Admintour\\AdmintourFingerprintMiddleware\\AdmintourFingerprintMiddleware\\wwwroot\\",
+      "BasePath": "_content/AdmintourFingerprintMiddleware",
+      "RelativePath": "css/site.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\css\\site.css"
+    },
+    {
+      "Identity": "D:\\dev\\Proyecto Admintour\\AdmintourFingerprintMiddleware\\AdmintourFingerprintMiddleware\\wwwroot\\img\\admintourLogo.png",
+      "SourceId": "AdmintourFingerprintMiddleware",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\dev\\Proyecto Admintour\\AdmintourFingerprintMiddleware\\AdmintourFingerprintMiddleware\\wwwroot\\",
+      "BasePath": "_content/AdmintourFingerprintMiddleware",
+      "RelativePath": "img/admintourLogo.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\img\\admintourLogo.png"
+    },
+    {
+      "Identity": "D:\\dev\\Proyecto Admintour\\AdmintourFingerprintMiddleware\\AdmintourFingerprintMiddleware\\wwwroot\\js\\site.js",
+      "SourceId": "AdmintourFingerprintMiddleware",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\dev\\Proyecto Admintour\\AdmintourFingerprintMiddleware\\AdmintourFingerprintMiddleware\\wwwroot\\",
+      "BasePath": "_content/AdmintourFingerprintMiddleware",
+      "RelativePath": "js/site.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\site.js"
+    }
+  ]
 }

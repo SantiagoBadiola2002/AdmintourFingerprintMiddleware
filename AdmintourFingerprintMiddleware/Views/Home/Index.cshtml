@@ -1,61 +1,72 @@
 ﻿@{
-    ViewData["Title"] = "Panel Huellas";
+    ViewData["Title"] = "Panel Huellas Admintour";
 }
 
-<link rel="stylesheet" href="/css/site.css">
-<script src="/js/site.js"></script>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"]</title>
 
-<div class="container">
-    <div class="header">
-        <img src="/img/admintourLogo.png" class="logo" />
+    <link rel="stylesheet" href="/css/site.css">
+    <script src="/js/site.js"></script>
+</head>
+<body>
+
+    <div class="container">
+
+        <div class="header">
+            <img src="/img/admintourLogo.png" class="logo" />
+        </div>
+
+        <div class="card">
+            <h2>Control Lector</h2>
+
+            <button onclick="call('POST','/api/huellas/inicializar')">Inicializar SDK</button>
+            <button onclick="call('POST','/api/huellas/abrir?indice=0')" class="success">Abrir</button>
+            <button onclick="call('POST','/api/huellas/cerrar')" class="danger">Cerrar</button>
+            <button onclick="call('POST','/api/huellas/reiniciar?indice=0')">Reiniciar</button>
+        </div>
+
+        <div class="card">
+            <h2>Estado</h2>
+
+            <button onclick="call('GET','/api/huellas/estado')">Estado General</button>
+            <button onclick="call('GET','/api/huellas/info-dispositivo')">Info Dispositivo</button>
+        </div>
+
+        <div class="card">
+            <h2>Capturas</h2>
+
+            <button onclick="call('POST','/api/huellas/capturarUnica')">
+                Capturar 1 Huella
+            </button>
+
+            <button onclick="call('POST','/api/huellas/capturar3Veces')">
+                Enrolar Huella
+            </button>
+
+            <button onclick="capturarYEnviar()" class="success">
+                Capturar y Enviar al API
+            </button>
+        </div>
+
+        <div class="card">
+            <h2>Comparar</h2>
+
+            <textarea id="template" rows="4" placeholder="Pega aquí template base64"></textarea>
+
+            <br><br>
+
+            <button onclick="comparar()">Comparar Huellas</button>
+        </div>
+
+        <div class="card">
+            <h2>Resultado</h2>
+            <pre id="resultado">Sistema listo.</pre>
+        </div>
+
     </div>
 
-    <div class="card">
-        <h2>Control Lector</h2>
-
-        <button onclick="call('POST','/api/huellas/inicializar')">Inicializar SDK</button>
-        <button onclick="call('POST','/api/huellas/abrir?indice=0')" class="success">Abrir</button>
-        <button onclick="call('POST','/api/huellas/cerrar')" class="danger">Cerrar</button>
-        <button onclick="call('POST','/api/huellas/reiniciar?indice=0')">Reiniciar</button>
-    </div>
-
-    <div class="card">
-        <h2>Estado</h2>
-
-        <button onclick="call('GET','/api/huellas/estado')">Estado General</button>
-        <button onclick="call('GET','/api/huellas/info-dispositivo')">Info Dispositivo</button>
-    </div>
-
-    <div class="card">
-        <h2>Capturas</h2>
-
-        <button onclick="call('POST','/api/huellas/capturarUnica')">
-            Capturar 1 Huella
-        </button>
-
-        <button onclick="call('POST','/api/huellas/capturar3Veces')">
-            Enrolar Huella
-        </button>
-
-        <button onclick="capturarYEnviar()" class="success">
-            Capturar y Enviar al API
-        </button>
-    </div>
-
-    <div class="card">
-        <h2>Comparar</h2>
-
-        <textarea id="template" rows="4"
-                  placeholder="Pega aquí template base64"></textarea>
-
-        <br><br>
-
-        <button onclick="comparar()">Comparar Huellas</button>
-    </div>
-
-    <div class="card">
-        <h2>Resultado</h2>
-        <pre id="resultado">Sistema listo.</pre>
-    </div>
-
-</div>
+</body>
+</html>

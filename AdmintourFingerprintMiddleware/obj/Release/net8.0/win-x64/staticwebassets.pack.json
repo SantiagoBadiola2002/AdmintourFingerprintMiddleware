@@ -1,0 +1,33 @@
+{
+  "Files": [
+    {
+      "Id": "D:\\dev\\Proyecto Admintour\\AdmintourFingerprintMiddleware\\AdmintourFingerprintMiddleware\\wwwroot\\css\\site.css",
+      "PackagePath": "staticwebassets\\css\\site.css"
+    },
+    {
+      "Id": "D:\\dev\\Proyecto Admintour\\AdmintourFingerprintMiddleware\\AdmintourFingerprintMiddleware\\wwwroot\\img\\admintourLogo.png",
+      "PackagePath": "staticwebassets\\img\\admintourLogo.png"
+    },
+    {
+      "Id": "D:\\dev\\Proyecto Admintour\\AdmintourFingerprintMiddleware\\AdmintourFingerprintMiddleware\\wwwroot\\js\\site.js",
+      "PackagePath": "staticwebassets\\js\\site.js"
+    },
+    {
+      "Id": "obj\\Release\\net8.0\\win-x64\\staticwebassets\\msbuild.AdmintourFingerprintMiddleware.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Release\\net8.0\\win-x64\\staticwebassets\\msbuild.build.AdmintourFingerprintMiddleware.props",
+      "PackagePath": "build\\AdmintourFingerprintMiddleware.props"
+    },
+    {
+      "Id": "obj\\Release\\net8.0\\win-x64\\staticwebassets\\msbuild.buildMultiTargeting.AdmintourFingerprintMiddleware.props",
+      "PackagePath": "buildMultiTargeting\\AdmintourFingerprintMiddleware.props"
+    },
+    {
+      "Id": "obj\\Release\\net8.0\\win-x64\\staticwebassets\\msbuild.buildTransitive.AdmintourFingerprintMiddleware.props",
+      "PackagePath": "buildTransitive\\AdmintourFingerprintMiddleware.props"
+    }
+  ],
+  "ElementsToRemove": []
+}
