@@ -16,6 +16,9 @@ D:\dev\Proyecto Admintour\AdmintourFingerprintMiddleware\AdmintourFingerprintMid
 D:\dev\Proyecto Admintour\AdmintourFingerprintMiddleware\AdmintourFingerprintMiddleware\obj\Debug\net8.0\AdmintourFingerprintMiddleware.csproj.CoreCompileInputs.cache
 D:\dev\Proyecto Admintour\AdmintourFingerprintMiddleware\AdmintourFingerprintMiddleware\obj\Debug\net8.0\AdmintourFingerprintMiddleware.MvcApplicationPartsAssemblyInfo.cs
 D:\dev\Proyecto Admintour\AdmintourFingerprintMiddleware\AdmintourFingerprintMiddleware\obj\Debug\net8.0\AdmintourFingerprintMiddleware.MvcApplicationPartsAssemblyInfo.cache
+D:\dev\Proyecto Admintour\AdmintourFingerprintMiddleware\AdmintourFingerprintMiddleware\obj\Debug\net8.0\AdmintourFingerprintMiddleware.RazorAssemblyInfo.cache
+D:\dev\Proyecto Admintour\AdmintourFingerprintMiddleware\AdmintourFingerprintMiddleware\obj\Debug\net8.0\AdmintourFingerprintMiddleware.RazorAssemblyInfo.cs
+D:\dev\Proyecto Admintour\AdmintourFingerprintMiddleware\AdmintourFingerprintMiddleware\obj\Debug\net8.0\AdmintourFingerprintMiddleware.sourcelink.json
 D:\dev\Proyecto Admintour\AdmintourFingerprintMiddleware\AdmintourFingerprintMiddleware\obj\Debug\net8.0\staticwebassets.build.json
 D:\dev\Proyecto Admintour\AdmintourFingerprintMiddleware\AdmintourFingerprintMiddleware\obj\Debug\net8.0\staticwebassets.development.json
 D:\dev\Proyecto Admintour\AdmintourFingerprintMiddleware\AdmintourFingerprintMiddleware\obj\Debug\net8.0\staticwebassets\msbuild.AdmintourFingerprintMiddleware.Microsoft.AspNetCore.StaticWebAssets.props
@@ -30,4 +33,4 @@ D:\dev\Proyecto Admintour\AdmintourFingerprintMiddleware\AdmintourFingerprintMid
 D:\dev\Proyecto Admintour\AdmintourFingerprintMiddleware\AdmintourFingerprintMiddleware\obj\Debug\net8.0\AdmintourFingerprintMiddleware.pdb
 D:\dev\Proyecto Admintour\AdmintourFingerprintMiddleware\AdmintourFingerprintMiddleware\obj\Debug\net8.0\AdmintourFingerprintMiddleware.genruntimeconfig.cache
 D:\dev\Proyecto Admintour\AdmintourFingerprintMiddleware\AdmintourFingerprintMiddleware\obj\Debug\net8.0\ref\AdmintourFingerprintMiddleware.dll
-D:\dev\Proyecto Admintour\AdmintourFingerprintMiddleware\AdmintourFingerprintMiddleware\obj\Debug\net8.0\AdmintourFingerprintMiddleware.sourcelink.json
+D:\dev\Proyecto Admintour\AdmintourFingerprintMiddleware\AdmintourFingerprintMiddleware\bin\Debug\net8.0\AdmintourFingerprintMiddleware.staticwebassets.runtime.json
