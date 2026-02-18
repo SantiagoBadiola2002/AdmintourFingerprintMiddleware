@@ -4,6 +4,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 
 namespace AdmintourFingerprintMiddleware.Services
 {
@@ -21,8 +22,6 @@ namespace AdmintourFingerprintMiddleware.Services
         /// <summary>
         /// Envía la huella digital capturada al servidor Admintour.
         /// </summary>
-        /// <param name="hotelCodigo">Código del hotel (hotcod)</param>
-        /// <param name="huellaBase64">Template de huella en Base64</param>
         public async Task GrabarHuellaAsync(string hotelCodigo, string huellaBase64)
         {
             var url = "https://gx18.admintour.com/admintour/API_ChannelAdmintour/Grabo_HuellaDigital";
@@ -38,10 +37,7 @@ namespace AdmintourFingerprintMiddleware.Services
             var json = JsonSerializer.Serialize(body, new JsonSerializerOptions { WriteIndented = true });
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            // 🔍 Mostrar el body en consola o en el log
             _logger.LogInformation("Body que se enviará al servidor:\n{Json}", json);
-            // También podés usar Console.WriteLine(json); si querés verlo sin logs
-
             _logger.LogInformation("Enviando huella digital al servidor Admintour ({Hotel})...", hotelCodigo);
 
             try
@@ -63,5 +59,49 @@ namespace AdmintourFingerprintMiddleware.Services
             }
         }
 
+        // ===========================
+        // NUEVO: OBTENER HUELLAS
+        // ===========================
+
+        public class HuellasResponse
+        {
+            public string? ErrorHuella { get; set; }
+            public List<HuellaItem>? ColeccionHuellas { get; set; }
+        }
+
+        public class HuellaItem
+        {
+            public string? HotelHuellaCodigo { get; set; }
+            public int HotelHuellaUsuarioId { get; set; }
+            public string? HotelHuellaUsuNombre { get; set; }
+            public string? HotelHuellaUsuApellido { get; set; }
+            public string? HotelHuellaDigital { get; set; }
+        }
+
+        public async Task<HuellasResponse> ObtenerHuellasAsync(int hotcod)
+        {
+            var url = $"https://gx18.admintour.com/admintour/API_ChannelAdmintour/Huellas?hotcod={hotcod}";
+
+            _logger.LogInformation("Consultando huellas en Admintour: {Url}", url);
+
+            var resp = await _httpClient.GetAsync(url);
+            var body = await resp.Content.ReadAsStringAsync();
+
+            _logger.LogInformation("Respuesta Huellas: {Body}", body);
+
+            if (!resp.IsSuccessStatusCode)
+                throw new Exception($"Error llamando Huellas: HTTP {(int)resp.StatusCode} - {body}");
+
+            var data = JsonSerializer.Deserialize<HuellasResponse>(body, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+
+            if (data == null)
+                throw new Exception("No se pudo deserializar la respuesta de Huellas.");
+
+            data.ColeccionHuellas ??= new List<HuellaItem>();
+            return data;
+        }
     }
 }

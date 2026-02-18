@@ -2,9 +2,13 @@
 using Microsoft.Extensions.Logging;
 using AdmintourFingerprintMiddleware.Services;
 using AdmintourFingerprintMiddleware.Models;
+using System.Text.Json;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using System.IO;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace AdmintourFingerprintMiddleware.Controllers
 {
@@ -37,17 +41,18 @@ namespace AdmintourFingerprintMiddleware.Controllers
                 if (!ok)
                     return StatusCode(500, new { error = "No se pudo inicializar el SDK de huellas." });
 
-                return Ok(new { inicializado = true });
+                return Ok(new { status = "ok", mensaje = "SDK inicializado correctamente." });
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al inicializar el SDK.");
+                _logger.LogError(ex, "Error al inicializar SDK.");
                 return StatusCode(500, new { error = ex.Message });
             }
         }
 
+
         // ----------------------------------------------------------------------
-        // POST: api/huellas/abrir
+        // POST: api/huellas/abrir?indice=0
         // ----------------------------------------------------------------------
         [HttpPost("abrir")]
         public IActionResult AbrirLector([FromQuery] int indice = 0)
@@ -57,16 +62,17 @@ namespace AdmintourFingerprintMiddleware.Controllers
                 bool ok = _servicio.AbrirDispositivo(indice);
 
                 if (!ok)
-                    return StatusCode(500, new { error = "No se pudo abrir el lector de huellas." });
+                    return StatusCode(500, new { error = "No se pudo abrir el lector." });
 
-                return Ok(new { lectorAbierto = true, indice });
+                return Ok(new { status = "ok", mensaje = "Lector abierto correctamente." });
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al abrir el lector.");
+                _logger.LogError(ex, "Error al abrir lector.");
                 return StatusCode(500, new { error = ex.Message });
             }
         }
+
 
         // ----------------------------------------------------------------------
         // POST: api/huellas/cerrar
@@ -77,148 +83,78 @@ namespace AdmintourFingerprintMiddleware.Controllers
             try
             {
                 _servicio.CerrarDispositivo();
-                return Ok(new { lectorCerrado = true });
+                return Ok(new { status = "ok", mensaje = "Lector cerrado correctamente." });
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al cerrar el lector.");
+                _logger.LogError(ex, "Error al cerrar lector.");
                 return StatusCode(500, new { error = ex.Message });
             }
         }
 
-        // ----------------------------------------------------------------------
-        // GET: api/huellas/estado
-        // ----------------------------------------------------------------------
-        [HttpGet("estado")]
-        public IActionResult ObtenerEstado()
-        {
-            try
-            {
-                int cantidad = _servicio.ObtenerCantidadDispositivos();
-
-                return Ok(new
-                {
-                    sdkInicializado = true,
-                    dispositivosDisponibles = cantidad
-                });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error consultando el estado general de huellas.");
-                return StatusCode(500, new { error = ex.Message });
-            }
-        }
-
-        [HttpPost("reiniciar")]
-        public IActionResult ReiniciarServicio([FromQuery] int indice = 0)
-        {
-            try
-            {
-                bool ok = _servicio.Reiniciar(indice);
-
-                if (!ok)
-                    return StatusCode(500, new
-                    {
-                        reiniciado = false,
-                        mensaje = "No se pudo reiniciar correctamente el servicio de huellas."
-                    });
-
-                return Ok(new
-                {
-                    reiniciado = true,
-                    mensaje = "Servicio de huellas reiniciado correctamente.",
-                    indice
-                });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error al reiniciar el servicio de huellas.");
-                return StatusCode(500, new { reiniciado = false, mensaje = ex.Message });
-            }
-        }
-
 
         // ----------------------------------------------------------------------
-        // GET: api/huellas/info-dispositivo
-        // ----------------------------------------------------------------------
-        [HttpGet("info-dispositivo")]
-        public IActionResult ObtenerInformacionDispositivo()
-        {
-            try
-            {
-                DeviceInfo info = _servicio.GetDeviceInfo();
-                return Ok(info);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error al obtener información del lector.");
-                return StatusCode(500, new { error = ex.Message });
-            }
-        }
-
-        // ----------------------------------------------------------------------
-        // POST: api/huellas/capturar
-        // Captura una sola huella (un template)
+        // POST: api/huellas/capturarUnica
         // ----------------------------------------------------------------------
         [HttpPost("capturarUnica")]
-        public async Task<IActionResult> CapturarHuella()
-        {
-            try
-            {
-                using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(20));
-
-                byte[] template = await _servicio.CapturarHuellaAsync(cts.Token);
-
-                return Ok(new
-                {
-                    templateBase64 = Convert.ToBase64String(template),
-                    tamaño = template.Length
-                });
-            }
-            catch (OperationCanceledException)
-            {
-                return StatusCode(408, new { error = "Tiempo de espera agotado. No se detectó ninguna huella." });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error al capturar la huella.");
-                return StatusCode(500, new { error = ex.Message });
-            }
-        }
-
-        // ----------------------------------------------------------------------
-        // POST: api/huellas/enrolar
-        // Captura 3 veces y fusiona template
-        // ----------------------------------------------------------------------
-        [HttpPost("capturar3Veces")]
-        public async Task<IActionResult> EnrolarHuella()
+        public async Task<IActionResult> CapturarUnica()
         {
             try
             {
                 using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(60));
-
-                string base64Template = await _servicio.CapturarHuella3VecesAsync(cts.Token);
+                var templateBase64 = await _servicio.CapturarUnicaAsync(cts.Token);
 
                 return Ok(new
                 {
-                    templateBase64 = base64Template,
-                    tamaño = Convert.FromBase64String(base64Template).Length
+                    status = "ok",
+                    templateBase64
                 });
             }
             catch (OperationCanceledException)
             {
-                return StatusCode(408, new { error = "Tiempo de espera agotado durante el proceso de enrolamiento." });
+                return StatusCode(408, new { error = "Tiempo agotado durante la captura." });
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error en el proceso de enrolamiento.");
+                _logger.LogError(ex, "Error al capturar huella única.");
                 return StatusCode(500, new { error = ex.Message });
             }
         }
 
+
         // ----------------------------------------------------------------------
-        // POST: api/huellas/comparar
-        // Captura huella 3 veces x2 y compara
+        // POST: api/huellas/capturar3Veces
+        // ----------------------------------------------------------------------
+        [HttpPost("capturar3Veces")]
+        public async Task<IActionResult> Capturar3Veces()
+        {
+            try
+            {
+                using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(60));
+                var templateBase64 = await _servicio.Capturar3VecesAsync(cts.Token);
+
+                return Ok(new
+                {
+                    status = "ok",
+                    templateBase64
+                });
+            }
+            catch (OperationCanceledException)
+            {
+                return StatusCode(408, new { error = "Tiempo agotado durante la captura." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al capturar huella 3 veces.");
+                return StatusCode(500, new { error = ex.Message });
+            }
+        }
+
+
+        // ----------------------------------------------------------------------
+        // POST: api/huellas/compararDosHuellas
+        // body: { templateGuardadoBase64: "..." }
+        // Compara template guardado vs huella capturada en el momento
         // ----------------------------------------------------------------------
         [HttpPost("compararDosHuellas")]
         public async Task<IActionResult> Comparar([FromBody] string templateBase64)
@@ -247,31 +183,25 @@ namespace AdmintourFingerprintMiddleware.Controllers
         }
 
 
+        // ----------------------------------------------------------------------
+        // POST: api/huellas/capturar-y-enviar
+        // Captura 3 veces, fusiona, lee hotel desde C:\admintour\configAdmintourHuellas.txt y envía a Admintour
+        // ----------------------------------------------------------------------
         [HttpPost("capturar-y-enviar")]
-        public async Task<IActionResult> CapturarYEnviar(
-    [FromServices] AdmintourApiClient apiClient)
+        public async Task<IActionResult> CapturarYEnviar([FromServices] AdmintourApiClient apiClient)
         {
             try
             {
-                string rutaArchivo = @"C:\config\hotel.txt";
+                // 1️⃣ Cargar configuración
+                var config = await ConfigHuellas.CargarAsync();
+                int hotelCodigo = config.HotelCodigo;
 
-                if (!System.IO.File.Exists(rutaArchivo))
-                    return StatusCode(500, new { error = "Archivo de configuración de hotel no encontrado." });
-
-                string hotelCodigo = (await System.IO.File.ReadAllTextAsync(rutaArchivo)).Trim();
-
-                if (string.IsNullOrWhiteSpace(hotelCodigo))
-                    return StatusCode(500, new { error = "El archivo de hotel está vacío o es inválido." });
-
-                _logger.LogInformation("Iniciando proceso de captura y envío de huella para el hotel {Hotel}", hotelCodigo);
-
+                // 2️⃣ Capturar huella
                 using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(60));
+                var templateBase64 = await _servicio.Capturar3VecesAsync(cts.Token);
 
-                // Captura fusionada de 3 huellas
-                string templateBase64 = await _servicio.CapturarHuella3VecesAsync(cts.Token);
-
-                // Envío al API externo
-                await apiClient.GrabarHuellaAsync(hotelCodigo, templateBase64);
+                // 3️⃣ Enviar a Admintour
+                await apiClient.GrabarHuellaAsync(hotelCodigo.ToString(), templateBase64);
 
                 return Ok(new
                 {
@@ -282,25 +212,70 @@ namespace AdmintourFingerprintMiddleware.Controllers
             }
             catch (OperationCanceledException)
             {
-                return StatusCode(408, new
-                {
-                    estado = "error",
-                    mensaje = "Tiempo de espera agotado durante la captura."
-                });
+                return StatusCode(408, new { estado = "error", mensaje = "Tiempo de espera agotado durante la captura." });
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error al capturar o enviar la huella.");
-
-                return StatusCode(500, new
-                {
-                    estado = "error",
-                    mensaje = ex.Message
-                });
+                return StatusCode(500, new { estado = "error", mensaje = ex.Message });
             }
         }
 
 
+
+        // ----------------------------------------------------------------------
+        // POST: api/huellas/validar-en-lista-admintour
+        // Lee hotcod de C:\admintour\configAdmintourHuellas.txt, trae la lista de Huellas desde Admintour,
+        // captura UNA sola vez y compara contra toda la lista.
+        // Devuelve ok + nombre + apellido + hotelCodigo
+        // ----------------------------------------------------------------------
+        [HttpPost("validar-en-lista-admintour")]
+        public async Task<IActionResult> ValidarEnListaAdmintour([FromServices] AdmintourApiClient apiClient)
+        {
+            try
+            {
+                // Leer configuración
+                var config = await ConfigHuellas.CargarAsync();
+                int hotcod = config.HotelCodigo;
+
+                _logger.LogInformation("Validación de huella. Hotcod={Hotcod}", hotcod);
+
+                var huellasResp = await apiClient.ObtenerHuellasAsync(hotcod);
+                var lista = huellasResp.ColeccionHuellas ?? new List<AdmintourApiClient.HuellaItem>();
+
+                if (lista.Count == 0)
+                    return Ok(new { ok = false, hotelCodigo = hotcod, mensaje = "No se encontraron huellas." });
+
+                var templates = lista
+                    .Where(x => !string.IsNullOrWhiteSpace(x.HotelHuellaDigital))
+                    .Select(x => x.HotelHuellaDigital!)
+                    .ToArray();
+
+                using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(60));
+                var match = await _servicio.BuscarCoincidenciaEnListaAsync(templates, cts.Token);
+
+                if (!match.Coincide || match.Indice < 0 || match.Indice >= lista.Count)
+                    return Ok(new { ok = false, hotelCodigo = hotcod, mensaje = "No coincide con ninguna huella." });
+
+                var usuario = lista[match.Indice];
+                return Ok(new
+                {
+                    ok = true,
+                    hotelCodigo = usuario.HotelHuellaCodigo ?? hotcod.ToString(),
+                    nombre = usuario.HotelHuellaUsuNombre ?? "",
+                    apellido = usuario.HotelHuellaUsuApellido ?? ""
+                });
+            }
+            catch (OperationCanceledException)
+            {
+                return StatusCode(408, new { ok = false, mensaje = "Tiempo agotado durante la captura/comparación." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error en ValidarEnListaAdmintour");
+                return StatusCode(500, new { ok = false, mensaje = ex.Message });
+            }
+        }
 
     }
 }
