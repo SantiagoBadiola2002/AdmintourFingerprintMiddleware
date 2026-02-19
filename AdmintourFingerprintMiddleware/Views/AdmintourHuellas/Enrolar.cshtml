@@ -1,0 +1,33 @@
+﻿@{
+    ViewData["Title"] = "Registrar Huella";
+}
+
+<link rel="stylesheet" href="~/css/huellas.css" />
+
+<body class="bg-enrolar">
+
+    <div class="card">
+        <img src="~/img/admintourLogo.png" class="logo" />
+        <div id="hotelLabel" class="hotel"></div>
+
+        <h1>Registro Biométrico</h1>
+        <p id="instrucciones">Presione el botón y coloque su dedo varias veces para registrar su huella</p>
+
+        <div id="loader" class="loader" style="display:none;"></div>
+
+        <div id="estado" class="estado">Esperando acción</div>
+
+        <div class="actions">
+            <button id="btnRegistrar" class="primary" onclick="registrar()">
+                Registrar Huella
+            </button>
+
+            <button id="btnRetry" class="retry" onclick="registrar()" style="display:none;">
+                Reintentar
+            </button>
+        </div>
+    </div>
+
+    <script src="~/js/enrolar.js"></script>
+    <script src="~/js/hotel.js"></script>
+</body>

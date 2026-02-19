@@ -101,7 +101,7 @@ namespace AdmintourFingerprintMiddleware.Controllers
         {
             try
             {
-                using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(60));
+                using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(15));
                 var templateBase64 = await _servicio.CapturarUnicaAsync(cts.Token);
 
                 return Ok(new
@@ -130,8 +130,8 @@ namespace AdmintourFingerprintMiddleware.Controllers
         {
             try
             {
-                using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(60));
-                var templateBase64 = await _servicio.Capturar3VecesAsync(cts.Token);
+                using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(15));
+                var templateBase64 = await _servicio.CapturarHuella3VecesAsync(cts.Token);
 
                 return Ok(new
                 {
@@ -161,7 +161,7 @@ namespace AdmintourFingerprintMiddleware.Controllers
         {
             try
             {
-                using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(45));
+                using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(15));
 
                 bool coincide = await _servicio.CompararDosHuellasAsync(templateBase64, cts.Token);
 
@@ -182,6 +182,27 @@ namespace AdmintourFingerprintMiddleware.Controllers
             }
         }
 
+        // GET: api/huellas/hotel
+        [HttpGet("hotel")]
+        public async Task<IActionResult> ObtenerHotel()
+        {
+            try
+            {
+                var config = await ConfigHuellas.CargarAsync();
+
+                return Ok(new
+                {
+                    hotelCodigo = config.HotelCodigo
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error obteniendo hotel");
+                return StatusCode(500, new { error = ex.Message });
+            }
+        }
+
+
 
         // ----------------------------------------------------------------------
         // POST: api/huellas/capturar-y-enviar
@@ -192,15 +213,12 @@ namespace AdmintourFingerprintMiddleware.Controllers
         {
             try
             {
-                // 1️⃣ Cargar configuración
                 var config = await ConfigHuellas.CargarAsync();
                 int hotelCodigo = config.HotelCodigo;
 
-                // 2️⃣ Capturar huella
-                using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(60));
-                var templateBase64 = await _servicio.Capturar3VecesAsync(cts.Token);
+                using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(15));
+                var templateBase64 = await _servicio.CapturarHuella3VecesAsync(cts.Token);
 
-                // 3️⃣ Enviar a Admintour
                 await apiClient.GrabarHuellaAsync(hotelCodigo.ToString(), templateBase64);
 
                 return Ok(new
@@ -219,7 +237,12 @@ namespace AdmintourFingerprintMiddleware.Controllers
                 _logger.LogError(ex, "Error al capturar o enviar la huella.");
                 return StatusCode(500, new { estado = "error", mensaje = ex.Message });
             }
+            finally
+            {
+                _servicio.CerrarDispositivo();
+            }
         }
+
 
 
 
@@ -234,7 +257,6 @@ namespace AdmintourFingerprintMiddleware.Controllers
         {
             try
             {
-                // Leer configuración
                 var config = await ConfigHuellas.CargarAsync();
                 int hotcod = config.HotelCodigo;
 
@@ -251,13 +273,14 @@ namespace AdmintourFingerprintMiddleware.Controllers
                     .Select(x => x.HotelHuellaDigital!)
                     .ToArray();
 
-                using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(60));
+                using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(15));
                 var match = await _servicio.BuscarCoincidenciaEnListaAsync(templates, cts.Token);
 
                 if (!match.Coincide || match.Indice < 0 || match.Indice >= lista.Count)
                     return Ok(new { ok = false, hotelCodigo = hotcod, mensaje = "No coincide con ninguna huella." });
 
                 var usuario = lista[match.Indice];
+
                 return Ok(new
                 {
                     ok = true,
@@ -275,7 +298,12 @@ namespace AdmintourFingerprintMiddleware.Controllers
                 _logger.LogError(ex, "Error en ValidarEnListaAdmintour");
                 return StatusCode(500, new { ok = false, mensaje = ex.Message });
             }
+            finally
+            {
+                _servicio.CerrarDispositivo();
+            }
         }
+
 
     }
 }

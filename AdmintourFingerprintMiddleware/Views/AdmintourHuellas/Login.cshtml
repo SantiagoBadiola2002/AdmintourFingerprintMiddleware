@@ -1,0 +1,31 @@
+﻿@{
+    ViewData["Title"] = "Login Huella";
+}
+
+<link rel="stylesheet" href="~/css/huellas.css" />
+
+<body class="bg-login">
+
+    <div class="card">
+        <img src="~/img/admintourLogo.png" class="logo" />
+        <div id="hotelLabel" class="hotel"></div>
+
+        <h1>Ingreso con Huella</h1>
+        <p>Presione el botón y coloque su dedo cuando se indique</p>
+
+        <button class="primary" onclick="loginHuella()">
+            Colocar dedo
+        </button>
+
+        <div class="loader"></div>
+
+        <div id="resultado" class="estado">
+            Esperando huella...
+        </div>
+    </div>
+
+    <script src="~/js/login.js"></script>
+    <script src="~/js/hotel.js"></script>
+
+
+</body>

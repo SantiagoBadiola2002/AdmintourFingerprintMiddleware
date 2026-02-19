@@ -1,8 +1,8 @@
 {
   "Files": [
     {
-      "Id": "D:\\dev\\Proyecto Admintour\\AdmintourFingerprintMiddleware\\AdmintourFingerprintMiddleware\\wwwroot\\css\\site.css",
-      "PackagePath": "staticwebassets\\css\\site.css"
+      "Id": "D:\\dev\\Proyecto Admintour\\AdmintourFingerprintMiddleware\\AdmintourFingerprintMiddleware\\wwwroot\\css\\huellas.css",
+      "PackagePath": "staticwebassets\\css\\huellas.css"
     },
     {
       "Id": "D:\\dev\\Proyecto Admintour\\AdmintourFingerprintMiddleware\\AdmintourFingerprintMiddleware\\wwwroot\\img\\admintourLogo.png",
@@ -13,8 +13,16 @@
       "PackagePath": "staticwebassets\\img\\icon.ico"
     },
     {
-      "Id": "D:\\dev\\Proyecto Admintour\\AdmintourFingerprintMiddleware\\AdmintourFingerprintMiddleware\\wwwroot\\js\\site.js",
-      "PackagePath": "staticwebassets\\js\\site.js"
+      "Id": "D:\\dev\\Proyecto Admintour\\AdmintourFingerprintMiddleware\\AdmintourFingerprintMiddleware\\wwwroot\\js\\enrolar.js",
+      "PackagePath": "staticwebassets\\js\\enrolar.js"
+    },
+    {
+      "Id": "D:\\dev\\Proyecto Admintour\\AdmintourFingerprintMiddleware\\AdmintourFingerprintMiddleware\\wwwroot\\js\\hotel.js",
+      "PackagePath": "staticwebassets\\js\\hotel.js"
+    },
+    {
+      "Id": "D:\\dev\\Proyecto Admintour\\AdmintourFingerprintMiddleware\\AdmintourFingerprintMiddleware\\wwwroot\\js\\login.js",
+      "PackagePath": "staticwebassets\\js\\login.js"
     },
     {
       "Id": "obj\\Debug\\net8.0-windows\\win-x64\\staticwebassets\\msbuild.AdmintourFingerprintMiddleware.Microsoft.AspNetCore.StaticWebAssets.props",

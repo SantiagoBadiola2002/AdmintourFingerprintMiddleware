@@ -7,374 +7,381 @@ using libzkfpcsharp;
 
 namespace AdmintourFingerprintMiddleware.Services
 {
-    /// <summary>
-    /// Servicio listo para producción para manejar dispositivos de huellas ZKTeco.
-    /// </summary>
     public class FingerprintService : IDisposable
     {
         private readonly ILogger<FingerprintService> _logger;
 
-        private bool _initialized = false;
         private IntPtr _deviceHandle = IntPtr.Zero;
         private IntPtr _dbHandle = IntPtr.Zero;
 
-        private const int TEMPLATE_SIZE = 2048;
+        private bool _initialized = false;
+        private readonly object _initLock = new();
+
+        private readonly SemaphoreSlim _captureLock = new(1, 1);
+
+        private const int TEMPLATE_SIZE = 4096;
+
+        private int _imgWidth;
+        private int _imgHeight;
 
         public FingerprintService(ILogger<FingerprintService> logger)
         {
             _logger = logger;
         }
 
-        // =====================================================
-        // Inicialización y apertura del lector
-        // =====================================================
+        private void EnsureReady(int deviceIndex = 0)
+        {
+            lock (_initLock)
+            {
+                if (!_initialized)
+                {
+                    _logger.LogInformation("Inicializando SDK automáticamente...");
+                    if (!Inicializar())
+                        throw new Exception("No se pudo inicializar el SDK");
+                }
+
+                if (_deviceHandle == IntPtr.Zero)
+                {
+                    _logger.LogInformation("Abriendo lector automáticamente...");
+                    if (!AbrirDispositivo(deviceIndex))
+                        throw new Exception("No se pudo abrir el lector");
+                }
+            }
+        }
+
+
+        // =========================================================
+        // INIT
+        // =========================================================
 
         public bool Inicializar()
         {
-            try
+            lock (_initLock)
             {
-                if (_initialized) return true;
+                if (_initialized)
+                    return true;
 
                 int ret = zkfp2.Init();
-                if (ret != 0)
+
+                if (ret != zkfp.ZKFP_ERR_OK)
                 {
-                    _logger.LogError("Error al inicializar el SDK. Código: {Ret}", ret);
+                    _logger.LogError("Error inicializando SDK: {Ret}", ret);
+                    return false;
+                }
+
+                _dbHandle = zkfp2.DBInit();
+
+                if (_dbHandle == IntPtr.Zero)
+                {
+                    _logger.LogError("No se pudo inicializar DB biométrica.");
+                    zkfp2.Terminate();
                     return false;
                 }
 
                 _initialized = true;
-
-                // Inicializar DB para operaciones de huellas
-                _dbHandle = zkfp2.DBInit();
-                if (_dbHandle == IntPtr.Zero)
-                {
-                    _logger.LogError("No se pudo inicializar la base de datos de huellas.");
-                    return false;
-                }
-
-                _logger.LogInformation("SDK y DB inicializados correctamente.");
+                _logger.LogInformation("SDK inicializado correctamente.");
                 return true;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Excepción al inicializar SDK.");
-                return false;
             }
         }
 
-        public bool AbrirDispositivo(int indice)
+        // =========================================================
+        // DEVICE
+        // =========================================================
+
+        public int ObtenerCantidadDispositivos()
         {
-            try
+            if (!_initialized)
+                throw new InvalidOperationException("SDK no inicializado");
+
+            return zkfp2.GetDeviceCount();
+        }
+
+        public bool AbrirDispositivo(int index = 0)
+        {
+            lock (_initLock)
             {
                 if (!_initialized)
-                    throw new InvalidOperationException("Debe inicializar el SDK antes de abrir el dispositivo.");
+                    throw new InvalidOperationException("SDK no inicializado");
 
-                if (_deviceHandle != IntPtr.Zero) return true;
+                if (_deviceHandle != IntPtr.Zero)
+                    return true;
 
-                _deviceHandle = zkfp2.OpenDevice(indice);
+                _deviceHandle = zkfp2.OpenDevice(index);
+
                 if (_deviceHandle == IntPtr.Zero)
                 {
-                    _logger.LogError("No se pudo abrir el dispositivo. Índice: {Indice}", indice);
+                    _logger.LogError("No se pudo abrir dispositivo.");
                     return false;
                 }
 
-                _logger.LogInformation("Dispositivo abierto correctamente. Índice: {Indice}", indice);
+                CachearResolucion();
+
+                _logger.LogInformation("Dispositivo abierto. Resolución {W}x{H}", _imgWidth, _imgHeight);
                 return true;
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Excepción al abrir dispositivo.");
-                return false;
-            }
+        }
+
+        private void CachearResolucion()
+        {
+            _imgWidth = GetIntParameter(1);
+            _imgHeight = GetIntParameter(2);
         }
 
         public void CerrarDispositivo()
         {
-            try
+            lock (_initLock)
             {
                 if (_deviceHandle != IntPtr.Zero)
                 {
                     zkfp2.CloseDevice(_deviceHandle);
                     _deviceHandle = IntPtr.Zero;
-                    _logger.LogInformation("Dispositivo cerrado.");
                 }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error al cerrar dispositivo.");
             }
         }
 
-        // =====================================================
-        // Captura de huellas
-        // =====================================================
+        // =========================================================
+        // PARAMETERS
+        // =========================================================
+
+        private int GetIntParameter(int id)
+        {
+            byte[] buffer = new byte[4];
+            int size = buffer.Length;
+
+            int ret = zkfp2.GetParameters(_deviceHandle, id, buffer, ref size);
+
+            if (ret != zkfp.ZKFP_ERR_OK)
+                throw new Exception($"Error leyendo parámetro {id}");
+
+            return BitConverter.ToInt32(buffer, 0);
+        }
+
+        private string GetStringParameter(int id)
+        {
+            byte[] buffer = new byte[256];
+            int size = buffer.Length;
+
+            int ret = zkfp2.GetParameters(_deviceHandle, id, buffer, ref size);
+
+            if (ret != zkfp.ZKFP_ERR_OK)
+                throw new Exception($"Error leyendo parámetro {id}");
+
+            return System.Text.Encoding.ASCII.GetString(buffer, 0, size).TrimEnd('\0');
+        }
+
+        public DeviceInfo GetDeviceInfo()
+        {
+            if (_deviceHandle == IntPtr.Zero)
+                throw new InvalidOperationException("Dispositivo no abierto");
+
+            return new DeviceInfo
+            {
+                Width = _imgWidth,
+                Height = _imgHeight,
+                Vendor = GetStringParameter(1101),
+                Product = GetStringParameter(1102),
+                Serial = GetStringParameter(1103)
+            };
+        }
+
+        // =========================================================
+        // CAPTURE CORE (PROTEGIDO)
+        // =========================================================
+
+        public async Task<byte[]> CapturarHuellaAsync(CancellationToken token = default)
+        {
+            EnsureReady(); // Inicia y abre el sdk y el lector
+
+            await _captureLock.WaitAsync(token);
+
+            try
+            {
+                byte[] img = new byte[_imgWidth * _imgHeight];
+                byte[] template = new byte[TEMPLATE_SIZE];
+
+                while (!token.IsCancellationRequested)
+                {
+                    int len = template.Length;
+
+                    int ret = zkfp2.AcquireFingerprint(_deviceHandle, img, template, ref len);
+
+                    if (ret == zkfp.ZKFP_ERR_OK && len > 0)
+                    {
+                        byte[] result = new byte[len];
+                        Array.Copy(template, result, len);
+                        return result;
+                    }
+
+                    await Task.Delay(150, token);
+                }
+
+                throw new OperationCanceledException();
+            }
+            finally
+            {
+                _captureLock.Release();
+            }
+        }
+
+
+        // =========================================================
+        // CAPTURE PUBLIC
+        // =========================================================
 
         public async Task<string> CapturarUnicaAsync(CancellationToken token)
         {
-            byte[] template = await CapturarHuellaAsync(token);
-            return Convert.ToBase64String(template);
+            var tpl = await CapturarHuellaAsync(token);
+            return Convert.ToBase64String(tpl);
         }
 
-        public async Task<string> Capturar3VecesAsync(CancellationToken token)
+        public async Task<string> CapturarHuella3VecesAsync(CancellationToken token = default)
         {
-            _logger.LogInformation("Iniciando captura 3 veces...");
+            EnsureReady();
 
-            byte[] t1 = await CapturarHuellaAsync(token);
-            byte[] t2 = await CapturarHuellaAsync(token);
-            byte[] t3 = await CapturarHuellaAsync(token);
+            var t1 = await CapturarHuellaAsync(token);
+            var t2 = await CapturarHuellaAsync(token);
+            var t3 = await CapturarHuellaAsync(token);
 
-            // En tu SDK, DBMerge devuelve el template merged dentro de regTemp y el largo en regTempLen
-            byte[] regTemp = new byte[TEMPLATE_SIZE];
-            int regTempLen = regTemp.Length;
+            byte[] merged = new byte[TEMPLATE_SIZE];
+            int len = merged.Length;
 
-            int ret = zkfp2.DBMerge(_dbHandle, t1, t2, t3, regTemp, ref regTempLen);
-            if (ret != 0)
-                throw new Exception($"Error al fusionar huellas. Código: {ret}");
+            int ret = zkfp2.DBMerge(_dbHandle, t1, t2, t3, merged, ref len);
 
-            // recortar al tamaño real
-            byte[] finalTemplate = new byte[regTempLen];
-            Array.Copy(regTemp, finalTemplate, regTempLen);
+            if (ret != zkfp.ZKFP_ERR_OK)
+                throw new Exception($"DBMerge error {ret}");
 
-            return Convert.ToBase64String(finalTemplate);
+            byte[] finalTpl = new byte[len];
+            Array.Copy(merged, finalTpl, len);
+
+            return Convert.ToBase64String(finalTpl);
         }
 
+        // =========================================================
+        // MATCH
+        // =========================================================
 
-
-        private async Task<byte[]> CapturarHuellaAsync(CancellationToken token)
+        public async Task<bool> CompararDosHuellasAsync(string base64, CancellationToken token = default)
         {
-            if (!_initialized || _deviceHandle == IntPtr.Zero)
-                throw new InvalidOperationException("El lector no está listo. Inicialice y abra el dispositivo.");
+            EnsureReady();
 
-            token.ThrowIfCancellationRequested();
+            byte[] stored = Convert.FromBase64String(base64);
+            byte[] live = await CapturarHuellaAsync(token);
 
-            var template = new byte[TEMPLATE_SIZE];
-            var img = new byte[256 * 360]; // tamaño típico, depende del dispositivo
-            int templateLen = TEMPLATE_SIZE;
+            int score = zkfp2.DBMatch(_dbHandle, stored, live);
 
-            _logger.LogInformation("Esperando dedo...");
-
-            // Intentar por 60 segundos
-            var start = DateTime.UtcNow;
-            while ((DateTime.UtcNow - start).TotalSeconds < 60)
-            {
-                token.ThrowIfCancellationRequested();
-
-                int ret = zkfp2.AcquireFingerprint(_deviceHandle, img, template, ref templateLen);
-                if (ret == 0 && templateLen > 0)
-                {
-                    _logger.LogInformation("Huella capturada. Len: {Len}", templateLen);
-
-                    // recortar al tamaño real
-                    byte[] finalTemplate = new byte[templateLen];
-                    Array.Copy(template, finalTemplate, templateLen);
-                    return finalTemplate;
-                }
-
-                await Task.Delay(200, token);
-            }
-
-            throw new TimeoutException("Tiempo de espera agotado para capturar huella.");
+            return score >= 0;
         }
 
-        // =====================================================
-        // Comparación
-        // =====================================================
-
-        /// <summary>
-        /// Compara una huella guardada (base64) con una huella capturada en el momento.
-        /// </summary>
-        public async Task<bool> CompararDosHuellasAsync(string templateBase64Guardado, CancellationToken token = default)
-        {
-            if (!_initialized || _deviceHandle == IntPtr.Zero)
-                throw new InvalidOperationException("El lector no está listo. Inicialice y abra el dispositivo.");
-
-            if (string.IsNullOrWhiteSpace(templateBase64Guardado))
-                throw new ArgumentException("El template guardado es inválido.");
-
-            token.ThrowIfCancellationRequested();
-
-            // 1. Template guardado en base64 => bytes
-            byte[] templateGuardadoBytes = Convert.FromBase64String(templateBase64Guardado);
-
-            // 2. Capturar huella en vivo
-            _logger.LogInformation("Coloque el dedo en el lector para capturar la huella en vivo...");
-            byte[] templateCapturadoBytes = await CapturarHuellaAsync(token);
-
-            // 3. Inicializar base de datos ZK
-            IntPtr db = zkfp2.DBInit();
-            if (db == IntPtr.Zero)
-                throw new Exception("No se pudo inicializar la base de datos de huellas.");
-
-            // 4. Comparar huellas usando ZKTeco DBMatch
-            int score = zkfp2.DBMatch(db, templateGuardadoBytes, templateCapturadoBytes);
-
-            // 5. Liberar DB
-            zkfp2.DBFree(db);
-
-            bool coincide = score >= 0; // >=0 significa comparación exitosa
-
-            _logger.LogInformation("Resultado comparación: coincide={Coincide}, score={Score}", coincide, score);
-
-            return coincide;
-        }
-
-        // ----------------------------------------------------------------------
-        // MATCH: Captura UNA sola vez y compara contra una lista de templates (Base64)
-        // ----------------------------------------------------------------------
         public class MatchListaResult
         {
             public bool Coincide { get; set; }
-            public int Indice { get; set; } = -1;
-            public int Score { get; set; } = -1;
+            public int Indice { get; set; }
+            public int Score { get; set; }
             public int Total { get; set; }
         }
 
         public async Task<MatchListaResult> BuscarCoincidenciaEnListaAsync(
-            string[] templatesBase64Guardados,
+            string[] templatesBase64,
             CancellationToken token = default)
         {
-            if (!_initialized || _deviceHandle == IntPtr.Zero)
-                throw new InvalidOperationException("El lector no está listo. Inicialice y abra el dispositivo.");
+            EnsureReady();
 
-            if (templatesBase64Guardados == null || templatesBase64Guardados.Length == 0)
-                throw new ArgumentException("La lista de templates está vacía.");
+            if (templatesBase64 == null || templatesBase64.Length == 0)
+                throw new ArgumentException("Lista vacía");
 
-            token.ThrowIfCancellationRequested();
+            byte[] captured = await CapturarHuellaAsync(token);
 
-            // 1) Capturar UNA sola huella en vivo
-            _logger.LogInformation("Coloque el dedo en el lector para capturar la huella en vivo (1 sola vez)...");
-            byte[] templateCapturadoBytes = await CapturarHuellaAsync(token);
+            int bestScore = -1;
+            int bestIndex = -1;
 
-            // 2) Inicializar DB una vez (local)
-            IntPtr db = zkfp2.DBInit();
-            if (db == IntPtr.Zero)
-                throw new Exception("No se pudo inicializar la base de datos de huellas.");
-
-            try
+            for (int i = 0; i < templatesBase64.Length; i++)
             {
-                int bestScore = -1;
-                int bestIndex = -1;
+                if (string.IsNullOrWhiteSpace(templatesBase64[i]))
+                    continue;
 
-                for (int i = 0; i < templatesBase64Guardados.Length; i++)
+                byte[] stored;
+
+                try
                 {
-                    token.ThrowIfCancellationRequested();
-
-                    var t64 = templatesBase64Guardados[i];
-                    if (string.IsNullOrWhiteSpace(t64))
-                        continue;
-
-                    byte[] guardadoBytes;
-                    try
-                    {
-                        guardadoBytes = Convert.FromBase64String(t64);
-                    }
-                    catch
-                    {
-                        _logger.LogWarning("Template inválido en índice {Index}. Se omite.", i);
-                        continue;
-                    }
-
-                    int score = zkfp2.DBMatch(db, guardadoBytes, templateCapturadoBytes);
-
-                    if (score > bestScore)
-                    {
-                        bestScore = score;
-                        bestIndex = i;
-                    }
+                    stored = Convert.FromBase64String(templatesBase64[i]);
+                }
+                catch
+                {
+                    continue;
                 }
 
-                // Mantenemos el mismo criterio que ya usás: match si score >= 0
-                bool coincide = bestScore >= 0;
+                int score = zkfp2.DBMatch(_dbHandle, stored, captured);
 
-                _logger.LogInformation("Búsqueda en lista: coincide={Coincide}, bestIndex={Index}, bestScore={Score}",
-                    coincide, bestIndex, bestScore);
-
-                return new MatchListaResult
+                if (score > bestScore)
                 {
-                    Coincide = coincide,
-                    Indice = coincide ? bestIndex : -1,
-                    Score = bestScore,
-                    Total = templatesBase64Guardados.Length
-                };
+                    bestScore = score;
+                    bestIndex = i;
+                }
             }
-            finally
+
+            bool match = bestScore >= 0;
+
+            return new MatchListaResult
             {
-                zkfp2.DBFree(db);
-            }
+                Coincide = match,
+                Indice = match ? bestIndex : -1,
+                Score = bestScore,
+                Total = templatesBase64.Length
+            };
         }
 
-        // =====================================================
-        // Limpieza / Reinicio
-        // =====================================================
+        // =========================================================
+        // RESET
+        // =========================================================
 
-        public void Dispose()
+        public bool Reiniciar(int indice = 0)
         {
-            try
-            {
-                CerrarDispositivo();
-
-                if (_dbHandle != IntPtr.Zero)
-                {
-                    zkfp2.DBFree(_dbHandle);
-                    _dbHandle = IntPtr.Zero;
-                }
-
-                if (_initialized)
-                {
-                    zkfp2.Terminate();
-                    _initialized = false;
-                }
-
-                _logger.LogInformation("FingerprintService liberado correctamente.");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error al liberar FingerprintService.");
-            }
-        }
-
-        public bool ReiniciarServicio()
-        {
-            lock (this)
+            lock (_initLock)
             {
                 try
                 {
-                    _logger.LogWarning("Reiniciando servicio de huellas...");
-
-                    // 1) Cerrar el lector si está abierto
                     CerrarDispositivo();
 
-                    // 2) Terminar SDK
+                    if (_dbHandle != IntPtr.Zero)
+                    {
+                        zkfp2.DBFree(_dbHandle);
+                        _dbHandle = IntPtr.Zero;
+                    }
+
                     if (_initialized)
                     {
                         zkfp2.Terminate();
                         _initialized = false;
                     }
 
-                    // 3) Volver a inicializar SDK y DB
-                    bool okInit = Inicializar();
-                    if (!okInit)
-                    {
-                        _logger.LogError("No se pudo reinicializar el SDK.");
-                        return false;
-                    }
-
-                    // 4) Reabrir lector (índice 0 por defecto)
-                    bool okOpen = AbrirDispositivo(0);
-                    if (!okOpen)
-                    {
-                        _logger.LogError("El SDK se reinició pero no se pudo abrir el lector.");
-                        return false;
-                    }
-
-                    _logger.LogInformation("Reinicio completo: SDK y lector funcionando correctamente.");
-                    return true;
+                    return Inicializar() && AbrirDispositivo(indice);
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Error grave durante el reinicio del servicio de huellas.");
+                    _logger.LogError(ex, "Error reiniciando lector");
                     return false;
                 }
+            }
+        }
+
+        // =========================================================
+        // DISPOSE
+        // =========================================================
+
+        public void Dispose()
+        {
+            CerrarDispositivo();
+
+            if (_dbHandle != IntPtr.Zero)
+            {
+                zkfp2.DBFree(_dbHandle);
+                _dbHandle = IntPtr.Zero;
+            }
+
+            if (_initialized)
+            {
+                zkfp2.Terminate();
+                _initialized = false;
             }
         }
     }

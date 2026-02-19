@@ -24,6 +24,14 @@ build_property.GenerateRazorMetadataSourceChecksumAttributes =
 build_property.MSBuildProjectDirectory = D:\dev\Proyecto Admintour\AdmintourFingerprintMiddleware\AdmintourFingerprintMiddleware
 build_property._RazorSourceGeneratorDebug = 
 
-[D:/dev/Proyecto Admintour/AdmintourFingerprintMiddleware/AdmintourFingerprintMiddleware/Views/Home/Index.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
+[D:/dev/Proyecto Admintour/AdmintourFingerprintMiddleware/AdmintourFingerprintMiddleware/Views/AdmintourHuellas/Enrolar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW50b3VySHVlbGxhc1xFbnJvbGFyLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/dev/Proyecto Admintour/AdmintourFingerprintMiddleware/AdmintourFingerprintMiddleware/Views/AdmintourHuellas/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW50b3VySHVlbGxhc1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/dev/Proyecto Admintour/AdmintourFingerprintMiddleware/AdmintourFingerprintMiddleware/Views/AdmintourHuellas/Login.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW50b3VySHVlbGxhc1xMb2dpbi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
