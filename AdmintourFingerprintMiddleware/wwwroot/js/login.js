@@ -3,61 +3,58 @@
     const divResultado = document.getElementById('resultado');
     const loader = document.querySelector('.loader');
 
-    // 1. Estado Visual Inicial
     btn.disabled = true;
     loader.style.display = "block";
     divResultado.innerText = "Coloque su dedo en el lector...";
     divResultado.className = "estado procesando";
 
     try {
-        // 2. Llamada al Controller
-        const response = await fetch('/api/huellas/validar-en-lista-admintour', {
-            method: 'POST'
-        });
-
+        // 1. Validar la huella
+        const response = await fetch('/api/huellas/validar-en-lista-admintour', { method: 'POST' });
         const data = await response.json();
 
-        // 3. Evaluar la respuesta del servidor
         if (response.ok && data.ok) {
-            // CASO ÉXITO: Huella encontrada
-            divResultado.className = "estado ok";
-            divResultado.innerHTML = `
-                ¡Bienvenido!<br>
-                <small>${data.nombre} ${data.apellido}</small><br>
-                <span style="font-size: 0.7em; color: #666;">La página se recargará en 10 segundos...</span>
-            `;
+            divResultado.innerText = "Huella reconocida. Obteniendo acceso...";
 
-            // RECARGA AUTOMÁTICA DESPUÉS DE 10 SEGUNDOS
-            setTimeout(() => {
-                console.log("Recargando página por éxito...");
-                window.location.reload();
-            }, 10000); // 10000 ms = 10 segundos
+            // 2. Obtener la URL de login con los códigos +2026
+            const loginResponse = await fetch('/api/huellas/login-admintour', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    hotelCodigo: data.hotelCodigo.toString(),
+                    usuarioId: data.hotelHuellaUsuarioId.toString()
+                })
+            });
 
-        }
-        else if (response.status === 408) {
-            // CASO ESPECÍFICO: Timeout (Tiempo agotado)
+            const loginData = await loginResponse.json();
+
+            if (loginResponse.ok && loginData.ok) {
+                // ÉXITO: Redirigir al link generado
+                divResultado.className = "estado ok";
+                divResultado.innerHTML = `¡Bienvenido! <br> Redirigiendo...`;
+
+
+                if (loginData.url) {
+                    window.location.href = loginData.url;
+                } else {
+                    console.error("No se recibió una URL válida del servidor");
+                }
+
+            } else {
+                throw new Error(loginData.mensaje || "Error al procesar el acceso.");
+            }
+        } else {
+            // Manejo de errores de validación (408 o denegado)
             divResultado.className = "estado error";
-            divResultado.innerText = data.mensaje || "Tiempo agotado. Intente de nuevo.";
+            divResultado.innerText = data.mensaje || "Acceso denegado.";
         }
-        else {
-            // CASO ERROR: No coincide, lista vacía, etc.
-            divResultado.className = "estado error";
-            divResultado.innerText = data.mensaje || "Acceso denegado o error en validación.";
-        }
-
     } catch (error) {
         divResultado.className = "estado error";
-        divResultado.innerText = "No se pudo conectar con el servicio de huellas.";
-        console.error("Error en login:", error);
+        divResultado.innerText = error.message || "Error de conexión.";
     } finally {
-        // Solo quitamos el loader y habilitamos el botón si NO fue éxito 
-        // para evitar que el usuario intente clickear mientras espera la recarga.
-        const exito = divResultado.classList.contains('ok');
-        if (!exito) {
+        // Si no hubo redirección (hubo error), reactivamos el botón
+        if (!divResultado.classList.contains('ok')) {
             btn.disabled = false;
-            loader.style.display = "none";
-        } else {
-            // Si fue éxito, solo ocultamos el loader pero dejamos el botón deshabilitado
             loader.style.display = "none";
         }
     }

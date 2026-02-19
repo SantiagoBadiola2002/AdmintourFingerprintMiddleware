@@ -7,7 +7,7 @@ namespace AdmintourFingerprintMiddleware.Models
         private static string Ruta => @"C:\admintour\configAdmintourHuellas.txt";
 
         public int HotelCodigo { get; set; }
-        public string ApiUrl { get; set; } = "";
+        public string Url { get; set; } = "";
 
         public static async Task<ConfigHuellas> CargarAsync()
         {
@@ -25,3 +25,5 @@ namespace AdmintourFingerprintMiddleware.Models
     }
 
 }
+
+

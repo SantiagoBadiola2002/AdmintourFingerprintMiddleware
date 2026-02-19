@@ -286,7 +286,8 @@ namespace AdmintourFingerprintMiddleware.Controllers
                     ok = true,
                     hotelCodigo = usuario.HotelHuellaCodigo ?? hotcod.ToString(),
                     nombre = usuario.HotelHuellaUsuNombre ?? "",
-                    apellido = usuario.HotelHuellaUsuApellido ?? ""
+                    apellido = usuario.HotelHuellaUsuApellido ?? "",
+                    hotelHuellaUsuarioId = usuario.HotelHuellaUsuarioId
                 });
             }
             catch (OperationCanceledException)
@@ -303,6 +304,30 @@ namespace AdmintourFingerprintMiddleware.Controllers
                 _servicio.CerrarDispositivo();
             }
         }
+
+        // ----------------------------------------------------------------------
+        // POST: api/huellas/login-admintour
+        // Realiza el login usando los datos obtenidos de ValidarEnListaAdmintour
+        // ----------------------------------------------------------------------
+        [HttpPost("login-admintour")]
+        public async Task<IActionResult> LoginAdmintour([FromBody] LoginRequest request, [FromServices] AdmintourApiClient apiClient)
+        {
+            if (string.IsNullOrEmpty(request.HotelCodigo) || string.IsNullOrEmpty(request.UsuarioId))
+            {
+                return BadRequest(new { ok = false, mensaje = "Datos incompletos." });
+            }
+
+            var result = await apiClient.LoginAsync(request.HotelCodigo, request.UsuarioId);
+
+            if (result.success)
+            {
+                // Enviamos la URL calculada al frontend
+                return Ok(new { ok = true, url = result.url, mensaje = "Login exitoso." });
+            }
+
+            return StatusCode(500, new { ok = false, mensaje = "Error al generar link de acceso." });
+        }
+
 
 
     }

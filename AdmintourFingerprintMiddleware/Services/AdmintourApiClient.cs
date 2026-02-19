@@ -5,6 +5,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
+using AdmintourFingerprintMiddleware.Models;
 
 namespace AdmintourFingerprintMiddleware.Services
 {
@@ -103,5 +104,41 @@ namespace AdmintourFingerprintMiddleware.Services
             data.ColeccionHuellas ??= new List<HuellaItem>();
             return data;
         }
+
+
+        // En AdmintourApiClient.cs
+        public async Task<(bool success, string url)> LoginAsync(string hotelCodigoStr, string usuarioIdStr)
+        {
+            try
+            {
+                var config = await ConfigHuellas.CargarAsync();
+
+                if (!int.TryParse(hotelCodigoStr, out int hotcodInt) ||
+                    !int.TryParse(usuarioIdStr, out int usuidInt))
+                {
+                    throw new Exception("Los parámetros recibidos no son numéricos válidos.");
+                }
+
+                // 1. Aplicamos la lógica de sumar 2026
+                int hotcodFinal = hotcodInt + 2026;
+                int usuidFinal = usuidInt + 2026;
+
+                // 2. Limpiar la URL base de posibles signos de interrogación al final
+                string urlBase = config.Url.Trim().Split('?')[0];
+
+                // 3. Construir la URL con el formato exacto: aspx?valor1,valor2
+                string urlFinal = $"{urlBase}?{hotcodFinal},{usuidFinal}";
+
+                _logger.LogInformation("URL de redirección generada: {Url}", urlFinal);
+
+                return (true, urlFinal);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error crítico en LoginAsync");
+                return (false, string.Empty);
+            }
+        }
+
     }
 }
